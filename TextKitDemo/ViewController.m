@@ -7,8 +7,12 @@
 //
 
 #import "ViewController.h"
+#import "MarkupTextStorage.h"
 
-@interface ViewController ()
+@interface ViewController ()<UITextViewDelegate>
+{
+    MarkupTextStorage *_textStorage;
+}
 
 @end
 
@@ -17,13 +21,50 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(preferredContentSizeDidChanged:)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    NSDictionary *titleAttributes = @{
+                                      NSForegroundColorAttributeName: [UIColor purpleColor],
+                                      NSTextEffectAttributeName: NSTextEffectLetterpressStyle
+                                      };
+    self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Text Kit Demo"
+                                                                     attributes:titleAttributes];
+    self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    
+    [self createMarkupTextView];
 }
 
-- (void)didReceiveMemoryWarning
+- (void)createMarkupTextView
+{   
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleBody]};
+    NSString *content = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"content" ofType:@"txt"]
+                                                  encoding:NSUTF8StringEncoding
+                                                     error:nil];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:content
+                                                                           attributes:attributes];
+    _textStorage = [[MarkupTextStorage alloc] init];
+    [_textStorage setAttributedString:attributedString];
+    
+    CGRect textViewRect = CGRectMake(20, 60, 280, self.view.bounds.size.height - 70);
+    
+    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+    
+    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(textViewRect.size.width, CGFLOAT_MAX)];
+    [layoutManager addTextContainer:textContainer];
+    [_textStorage addLayoutManager:layoutManager];
+    
+    _textView = [[UITextView alloc] initWithFrame:textViewRect
+                                    textContainer:textContainer];
+    _textView.delegate = self;
+    [self.view addSubview:_textView];
+}
+
+- (void)preferredContentSizeDidChanged:(NSNotification *)notification
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    self.textView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 }
 
 @end

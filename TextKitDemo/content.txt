@@ -1,0 +1,3 @@
+    This is a demo of **Text Kit**, you can change the system font size in **Setting** app at path _Settings General Text Size_. And in you app, you SHOULD set the font of `TextView` with method `preferredFontForTextStyle` instead of ~~fontWithName~~.
+    As you can see at the Title, is it nice? it's an effect naming **Letterpress**.
+    Also, you can use `UITextStorage` `UILayoutManager` and `UITextContainer` to supports more complex text layout. Thanks **Apple** and thanks the `Text Kit`.

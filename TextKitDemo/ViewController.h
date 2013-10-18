@@ -10,4 +10,7 @@
 
 @interface ViewController : UIViewController
 
+@property (nonatomic, strong) IBOutlet UILabel *    titleLabel;
+@property (nonatomic, strong) IBOutlet UITextView * textView;
+
 @end

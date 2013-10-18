@@ -21,6 +21,8 @@
 		B186402A181143AE00C50873 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B186400C181143AE00C50873 /* UIKit.framework */; };
 		B1864032181143AE00C50873 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1864030181143AE00C50873 /* InfoPlist.strings */; };
 		B1864034181143AE00C50873 /* TextKitDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B1864033181143AE00C50873 /* TextKitDemoTests.m */; };
+		B186403F181147A200C50873 /* MarkupTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B186403E181147A200C50873 /* MarkupTextStorage.m */; };
+		B18640411811553800C50873 /* content.txt in Resources */ = {isa = PBXBuildFile; fileRef = B18640401811553800C50873 /* content.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,9 @@
 		B186402F181143AE00C50873 /* TextKitDemoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TextKitDemoTests-Info.plist"; sourceTree = "<group>"; };
 		B1864031181143AE00C50873 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B1864033181143AE00C50873 /* TextKitDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TextKitDemoTests.m; sourceTree = "<group>"; };
+		B186403D181147A200C50873 /* MarkupTextStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkupTextStorage.h; sourceTree = "<group>"; };
+		B186403E181147A200C50873 /* MarkupTextStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkupTextStorage.m; sourceTree = "<group>"; };
+		B18640401811553800C50873 /* content.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = content.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +122,8 @@
 				B186401A181143AE00C50873 /* Main.storyboard */,
 				B186401D181143AE00C50873 /* ViewController.h */,
 				B186401E181143AE00C50873 /* ViewController.m */,
+				B186403D181147A200C50873 /* MarkupTextStorage.h */,
+				B186403E181147A200C50873 /* MarkupTextStorage.m */,
 				B1864020181143AE00C50873 /* Images.xcassets */,
 				B186400F181143AE00C50873 /* Supporting Files */,
 			);
@@ -130,6 +137,7 @@
 				B1864011181143AE00C50873 /* InfoPlist.strings */,
 				B1864014181143AE00C50873 /* main.m */,
 				B1864016181143AE00C50873 /* TextKitDemo-Prefix.pch */,
+				B18640401811553800C50873 /* content.txt */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -228,6 +236,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B18640411811553800C50873 /* content.txt in Resources */,
 				B1864021181143AE00C50873 /* Images.xcassets in Resources */,
 				B1864013181143AE00C50873 /* InfoPlist.strings in Resources */,
 				B186401C181143AE00C50873 /* Main.storyboard in Resources */,
@@ -249,6 +258,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B186403F181147A200C50873 /* MarkupTextStorage.m in Sources */,
 				B186401F181143AE00C50873 /* ViewController.m in Sources */,
 				B1864019181143AE00C50873 /* AppDelegate.m in Sources */,
 				B1864015181143AE00C50873 /* main.m in Sources */,
