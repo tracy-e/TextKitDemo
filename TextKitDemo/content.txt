@@ -1,3 +1,188 @@
-    This is a demo of **Text Kit**, you can change the system font size in **Setting** app at path _Settings General Text Size_. And in you app, you SHOULD set the font of `TextView` with method `preferredFontForTextStyle` instead of ~~fontWithName~~.
-    As you can see at the Title, is it nice? it's an effect naming **Letterpress**.
-    Also, you can use `UITextStorage` `UILayoutManager` and `UITextContainer` to supports more complex text layout. Thanks **Apple** and thanks the `Text Kit`.
+### Headings ###
+
+---
+
+Setext-style:
+
+	Heading 1
+	========
+	
+	Heading 2
+	--------
+
+atx-style (closing #'s are optional):
+
+	# Heading 1 #
+
+	## Heading 2 ##
+	
+	### Heading 3 ##
+	
+	#### Heading 4 ##
+	
+	##### Heading 5 ##
+
+	###### Heading 6 ######
+
+
+### Phrase Emphasis ###
+
+---
+
+	*italic*   **bold**
+	_italic_   __bold__
+
+
+### Links ###
+
+---
+
+Inline:
+
+	An [example](http://example.com/)
+
+Reference-style labels (titles are optional):
+
+	An [example][id]. Then, anywhere
+	else in the doc, define the link:
+	
+	[id]: http://example.com/  "Title"
+
+
+### Images ###
+
+---
+
+Inline (titles are optional):
+
+	![alt text](http://example.com/image.png)
+
+Reference-style:
+
+	![alt text][id]
+
+	[id]: /url/to/img.jpg "Title"
+
+
+### Lists ###
+
+---
+
+Ordered, without paragraphs:
+
+	1.  List1
+	1.  List2
+	1.  List3
+
+Unordered, with paragraphs:
+
+	-   A list item.
+	
+		With multiple paragraphs.
+
+	-   Bar
+
+You can nest them:
+
+	-   Abacus
+		- answer
+	-   Bubbles
+		1.  bunk
+		2.  bupkis
+			- BELITTLER
+		3. burper
+	-   Cunning
+
+
+### Blockquotes ###
+
+---
+
+	> Email-style angle brackets
+	> are used for blockquotes.
+	
+	> > And, they can be nested.
+
+	> #### Headings in blockquotes
+	> 
+	> * You can quote a list.
+	> * Etc.
+
+
+### Code Spans ###
+
+---
+
+	`<code>` spans are delimited
+	by backticks.
+
+	You can include literal backticks
+	like ```this```.
+
+
+### Preformatted Code Blocks ###
+
+---
+
+Indent every line of a code block by at least 4 spaces or 1 tab.
+
+	This is a normal paragraph.
+
+	    This is a preformatted
+	    code block.
+
+### Tables ###
+
+---
+
+A simple table looks like this:
+
+	 Heading |  Heading |  Heading
+	------- | ------- | -------
+	 Cell   |  Cell   |  Cell
+	 Cell   |  Cell   |  Cell
+
+
+If you wish, you can add a leading and tailing pipe to each line of the table:
+
+	|  Heading |  Heading |  Heading |
+	| ------- | ------- | ------- |
+	|   Cell  |   Cell  |   Cell  |
+	|   Cell  |   Cell  |   Cell  |
+
+Specify alignement for each column by adding colons to separator lines:
+
+	Heading | Heading | Heading
+	:----- | :----: | ------:
+	Left   | Center | Right
+	Left   | Center | Right
+
+### Strikethrough ###
+
+---
+
+Wrap with 2 tilde characters:
+
+	~~Strikethrough~~
+
+### Horizontal Rules ###
+
+---
+
+Three or more dashes or asterisks:
+
+	---
+	
+	* * *
+	
+	- - - - 
+
+
+### Manual Line Breaks ###
+
+---
+
+End a line with two or more spaces:
+
+	Roses are red,   
+	Violets are blue.

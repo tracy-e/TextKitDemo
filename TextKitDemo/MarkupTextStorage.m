@@ -10,34 +10,36 @@
 
 @implementation MarkupTextStorage
 {
-    NSMutableAttributedString *_backingStore;
-    NSDictionary *_replacements;
+    NSMutableAttributedString *_attributedString;
+    NSDictionary *_attributeDictionary;
+    NSDictionary *_bodyAttributes;
 }
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        _backingStore = [[NSMutableAttributedString alloc] init];
-        [self createMarkupStyledPatterns];
+        _attributedString = [[NSMutableAttributedString alloc] init];
+        
+        [self createHighlightPatterns];
     }
     return self;
 }
 
 - (NSString *)string
 {
-    return [_backingStore string];
+    return [_attributedString string];
 }
 
 - (NSDictionary *)attributesAtIndex:(NSUInteger)location effectiveRange:(NSRangePointer)range
 {
-    return [_backingStore attributesAtIndex:location effectiveRange:range];
+    return [_attributedString attributesAtIndex:location effectiveRange:range];
 }
 
 - (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)str
 {
     [self beginEditing];
-    [_backingStore replaceCharactersInRange:range withString:str];
+    [_attributedString replaceCharactersInRange:range withString:str];
     [self edited:NSTextStorageEditedCharacters | NSTextStorageEditedAttributes
            range:range changeInLength:str.length - range.length];
     [self endEditing];
@@ -46,7 +48,7 @@
 - (void)setAttributes:(NSDictionary *)attrs range:(NSRange)range
 {
     [self beginEditing];
-    [_backingStore setAttributes:attrs range:range];
+    [_attributedString setAttributes:attrs range:range];
     [self edited:NSTextStorageEditedAttributes
            range:range changeInLength:0];
     [self endEditing];
@@ -61,9 +63,9 @@
 
 - (void)performReplacementsForRange:(NSRange)changedRange
 {
-    NSRange extendedRange = NSUnionRange(changedRange, [[_backingStore string]
+    NSRange extendedRange = NSUnionRange(changedRange, [[_attributedString string]
                                                         lineRangeForRange:NSMakeRange(changedRange.location, 0)]);
-    extendedRange = NSUnionRange(changedRange, [[_backingStore string]
+    extendedRange = NSUnionRange(changedRange, [[_attributedString string]
                                                 lineRangeForRange:NSMakeRange(NSMaxRange(changedRange), 0)]);
     [self applyStylesToRange:extendedRange];
 }
@@ -80,74 +82,77 @@
     return @{ NSFontAttributeName : font };
 }
 
-- (void)createMarkupStyledPatterns {
-    UIFontDescriptor *scriptFontDescriptor =
-    [UIFontDescriptor fontDescriptorWithFontAttributes:
-     @{UIFontDescriptorFamilyAttribute: @"Bradley Hand"}];
+- (void)createHighlightPatterns {
+    _bodyAttributes = @{ NSFontAttributeName:[UIFont fontWithName:@"Avenir Next" size:14],
+                         NSBackgroundColorAttributeName: [UIColor clearColor],
+                         NSForegroundColorAttributeName: [UIColor colorWithRed:(100 / 255.0) green:(100 / 255.0) blue:(100 / 255.0) alpha:1],
+                         NSUnderlineStyleAttributeName: [NSNumber numberWithInteger:NSUnderlineStyleNone],
+                         NSStrokeColorAttributeName: @0 };
+    NSDictionary *headingAttributes = @{ NSFontAttributeName: [UIFont boldSystemFontOfSize:15],
+                                         NSForegroundColorAttributeName: [UIColor blackColor] };
     
-    // 1. base our script font on the preferred body font size
-    UIFontDescriptor* bodyFontDescriptor = [UIFontDescriptor
-                                            preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
-    NSNumber* bodyFontSize = bodyFontDescriptor.
-    fontAttributes[UIFontDescriptorSizeAttribute];
-    UIFont* scriptFont = [UIFont
-                          fontWithDescriptor:scriptFontDescriptor size:[bodyFontSize floatValue]];
+    NSDictionary *boldAttributes = @{ NSFontAttributeName: [UIFont boldSystemFontOfSize:14],
+                                      NSForegroundColorAttributeName: [UIColor blackColor] };
     
-    // 2. create the attributes
-    NSDictionary* boldAttributes = [self
-                                    createAttributesForFontStyle:UIFontTextStyleBody
-                                    withTrait:UIFontDescriptorTraitBold];
-    NSDictionary* italicAttributes = [self
-                                      createAttributesForFontStyle:UIFontTextStyleBody
-                                      withTrait:UIFontDescriptorTraitItalic];
-    NSDictionary* strikeThroughAttributes = @{ NSStrikethroughStyleAttributeName : @1,
-                                               NSForegroundColorAttributeName: [UIColor redColor]};
-    NSDictionary* scriptAttributes = @{ NSFontAttributeName : scriptFont,
-                                        NSForegroundColorAttributeName: [UIColor blueColor]
-                                        };
-    NSDictionary* redTextAttributes =
-    @{ NSForegroundColorAttributeName : [UIColor redColor]};
+    NSDictionary *italicAttributes = @{ NSFontAttributeName: [UIFont italicSystemFontOfSize:14] };
     
-    _replacements = @{
-                      @"(\\*\\*\\w+(\\s\\w+)*\\*\\*)" : boldAttributes,
-                      @"(_\\w+(\\s\\w+)*_)" : italicAttributes,
-                      @"(~~\\w+(\\s\\w+)*~~)" : strikeThroughAttributes,
-                      @"(`\\w+(\\s\\w+)*`)" : scriptAttributes,
-                      @"\\s([A-Z]{2,})\\s" : redTextAttributes
-                      };
-}
+    NSDictionary *boldItalicAttributes = @{ NSFontAttributeName: [UIFont fontWithName:@"AvenirNext-BoldItalic" size:14],
+                                            NSForegroundColorAttributeName: [UIColor blackColor] };
+    
+    NSDictionary *strikethroughAttributes = @{ NSStrikethroughColorAttributeName: [UIColor blackColor],
+                                               NSStrikethroughStyleAttributeName: @1};
+    
+    NSDictionary *inlineCodeAttributes = @{ NSBackgroundColorAttributeName: [UIColor colorWithRed:(239 / 255.0) green:(239 / 255.0) blue:(239 / 255.0) alpha:1],
+                                            NSForegroundColorAttributeName: [UIColor blackColor]};
+    
+    NSMutableDictionary *blockCodeAttributes = [_bodyAttributes mutableCopy];
+    blockCodeAttributes[NSFontAttributeName] = [UIFont fontWithName:@"Menlo-Regular" size:14];
+    
+    NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName: [UIColor colorWithRed:0.255 green:0.514 blue:0.769 alpha:1.00] };
+    
+    //TODO: full markdown highlight
+    /*
+     1. 标题       H1~H6 === ---
+     2. 粗体       **bold** __bold__
+     3. 斜体       *italic* _italic_
+     4. 粗斜体      ***bold italic*** ___bold italic___ *__bold italic__* **_bold italic_** _**bold italic**_ __*bold italic*__
+     5. 链接       [link](http://example.com/)                 [link][id] \n [id]: http://example.com/
+     6. 图片       ![image](http://example.com/image.png)      ![image][id] \n [id]: http://example.com/image.png
+     7. 纯链接      http://example.com/
+     8. 行内代码    `inline code`
+     9. 代码块      ```\n code block \n```
+     10. 引用      > text
+     11. 分割线     ---  * * *  - - -
+     */
+    
+    _attributeDictionary = @{
+                             @"[a-zA-Z0-9\t\n ./<>?;:\\\"'`!@#$%^&*()[]{}_+=|\\-]":_bodyAttributes,
+                             @"(\\#{1,6}([^\n]+?)*\n)": headingAttributes,
+                             @"\\**(?:^|[^*])(\\*\\*(\\w+(\\s\\w+)*)\\*\\*)":boldAttributes,
+                             @"\\**(?:^|[^*])(\\*(\\w+(\\s\\w+)*)\\*)":italicAttributes,
+                             @"(\\*\\*\\*\\w+(\\s\\w+)*\\*\\*\\*)":boldItalicAttributes,
+                             @"(~~\\w+(\\s\\w+)*~~)": strikethroughAttributes,
+                             @"(`\\w+(\\s\\w+)*`)":inlineCodeAttributes,
+                             @"(```\n([\\s\n\\d\\w[/[\\.,-\\/#!?@$%\\^&\\*;:|{}<>+=\\-'_~()\\\"\\[\\]\\\\]/]]*)\n```)":blockCodeAttributes,
+                             @"(!?\\[\\w+(\\s\\w+)*\\]\\(\\w+\\w[/[\\.,-\\/#!?@$%\\^&\\*;:|{}<>+=\\-'_~()\\\"\\[\\]\\\\]/ \\w+]*\\))":linkAttributes
+                             };}
 
 - (void)applyStylesToRange:(NSRange)searchRange
 {
-    NSDictionary* normalAttrs = @{NSFontAttributeName:
-                                      [UIFont preferredFontForTextStyle:UIFontTextStyleBody]};
-    
-    // iterate over each replacement
-    for (NSString* key in _replacements) {
-        NSRegularExpression *regex = [NSRegularExpression
-                                      regularExpressionWithPattern:key
-                                      options:0
-                                      error:nil];
+    for (NSString *key in _attributeDictionary) {
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:key options:0 error:nil];
         
-        NSDictionary* attributes = _replacements[key];
+        NSDictionary *attributes = _attributeDictionary[key];
         
-        [regex enumerateMatchesInString:[_backingStore string]
-                                options:0
-                                  range:searchRange
-                             usingBlock:^(NSTextCheckingResult *match,
-                                          NSMatchingFlags flags,
-                                          BOOL *stop){
-                                 // apply the style
+        [regex enumerateMatchesInString:[_attributedString string] options:0 range:searchRange
+                             usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop) {
                                  NSRange matchRange = [match rangeAtIndex:1];
                                  [self addAttributes:attributes range:matchRange];
                                  
-                                 // reset the style to the original
                                  if (NSMaxRange(matchRange)+1 < self.length) {
-                                     [self addAttributes:normalAttrs
-                                                   range:NSMakeRange(NSMaxRange(matchRange)+1, 1)];
+                                     [self addAttributes:_bodyAttributes range:NSMakeRange(NSMaxRange(matchRange)+1, 1)];
                                  }
                              }];
-    }
-}
+    }}
 
 @end

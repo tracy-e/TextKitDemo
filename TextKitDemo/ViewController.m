@@ -29,7 +29,7 @@
                                       NSForegroundColorAttributeName: [UIColor purpleColor],
                                       NSTextEffectAttributeName: NSTextEffectLetterpressStyle
                                       };
-    self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Text Kit Demo"
+    self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Markdown"
                                                                      attributes:titleAttributes];
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     
@@ -38,7 +38,7 @@
 
 - (void)createMarkupTextView
 {   
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleBody]};
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont fontWithName:@"Avenir Next" size:14]};
     NSString *content = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"content" ofType:@"txt"]
                                                   encoding:NSUTF8StringEncoding
                                                      error:nil];
@@ -65,6 +65,13 @@
 {
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.textView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesEnded:touches withEvent:event];
+    
+    [_textView resignFirstResponder];
 }
 
 @end
